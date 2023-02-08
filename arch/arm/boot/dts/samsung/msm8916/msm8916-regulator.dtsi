@@ -75,7 +75,7 @@
 		qcom,cpr-gcnt-time = <1>;
 		qcom,vdd-apc-step-up-limit = <1>;
 		qcom,vdd-apc-step-down-limit = <1>;
-		qcom,cpr-apc-volt-step = <5000>;
+		qcom,cpr-apc-volt-step = <125000>;
 
 		qcom,cpr-fuse-row = <27 0>;
 		qcom,cpr-fuse-target-quot = <42 24 6>;
@@ -227,7 +227,7 @@
 		pm8916_l5: regulator-l5 {
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <1850000>;
-			qcom,init-voltage = <1800000>;
+			qcom,init-voltage = <1850000>;
 			status = "okay";
 		};
 	};
