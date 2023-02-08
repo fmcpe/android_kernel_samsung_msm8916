@@ -381,7 +381,6 @@
 		compatible = "qcom,clock-a53-8916";
 		reg = <0x0b011050 0x8>,
 		      <0x0005c004 0x8>,
-		      reg-names="rcg-base",
 		      <0x0005c00c 0x8>;
 		reg-names = "rcg-base", "efuse1", "efuse";
 		qcom,safe-freq = < 400000000 >;
