@@ -341,25 +341,22 @@ static DEFINE_VDD_REGULATORS(vdd_sr2_pll, VDD_SR2_PLL_NUM, 2,
 				vdd_sr2_levels, NULL);
 
 static struct pll_freq_tbl apcs_pll_freq[] = {
-	F_APCS_PLL( 200000000, 10, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL( 400000000, 21, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL( 800000000, 42, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(1209600000, 63, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(1612800000, 84, 0x0, 0x1, 0x0, 0x0, 0x0),
+	F_APCS_PLL( 200000000, 10, 0,   1,    0, 0, 0),
+	F_APCS_PLL( 400000000, 21, 0,   1,    0, 0, 0),
+	F_APCS_PLL( 800000000, 42, 0,   1,    0, 0, 0),
+	F_APCS_PLL(1209600000, 63, 0,   1,    0, 0, 0),
+	F_APCS_PLL(1612800000, 84, 0,   1,    0, 0, 0),
 
-	/* Higher frequencies */
-	F_APCS_PLL(1804800000, 94, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(1996800000,104, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(2188800000,114, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(2380800000,124, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(2572800000,134, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(2764800000,144, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(2956800000,154, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(3148800000,164, 0x0, 0x1, 0x0, 0x0, 0x0),
-	F_APCS_PLL(3340800000,174, 0x0, 0x1, 0x0, 0x0, 0x0),
+	/* Overclock */
+	F_APCS_PLL(1804800000, 94, 0,   1,    0, 0, 0),
+	F_APCS_PLL(1996800000,104, 0,   1,    0, 0, 0),
+
+	/* Nightcore range */
+	F_APCS_PLL(2147000000,111,820,1000, 0, 0, 0),
 
 	PLL_F_END
 };
+
 
 
 static struct pll_clk a53sspll = {
