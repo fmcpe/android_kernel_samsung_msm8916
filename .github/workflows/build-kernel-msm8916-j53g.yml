@@ -1,0 +1,95 @@
+name: Build MSM8916 J53G Kernel (LOS 17.1)
+
+on:
+  push:
+    branches: [ lineage-17.1 ]
+  pull_request:
+    branches: [ lineage-17.1 ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout kernel source
+      uses: actions/checkout@v6.0.1
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          bc bison flex git \
+          libssl-dev make \
+          gcc g++ libc6-dev \
+          libncurses-dev libncurses6 \
+          libtinfo-dev \
+          lib32z1 lib32stdc++6 \
+          ccache unzip \
+          device-tree-compiler zip
+
+    - name: Add compatibility symlinks
+      run: |
+        sudo ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
+        sudo ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
+
+    - name: Setup ccache
+      run: |
+        echo "USE_CCACHE=1" >> $GITHUB_ENV
+        echo "CCACHE_DIR=$HOME/.ccache" >> $GITHUB_ENV
+        ccache -M 10G
+
+    - name: Clone GCC 4.9 toolchain
+      run: |
+        git clone --depth=1 \
+          https://github.com/fmcpe/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git \
+          toolchain
+
+    - name: Export build variables
+      run: |
+        echo "ARCH=arm" >> $GITHUB_ENV
+        echo "SUBARCH=arm" >> $GITHUB_ENV
+        echo "CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi-" >> $GITHUB_ENV
+        echo "KBUILD_BUILD_USER=serenity" >> $GITHUB_ENV
+        echo "KBUILD_BUILD_HOST=j53g-los-oc" >> $GITHUB_ENV
+
+    - name: Clean kernel tree
+      run: |
+        make ARCH=arm CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi- clean
+        make ARCH=arm CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi- mrproper
+
+    - name: Configure kernel
+      run: |
+        make ARCH=arm CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi- VARIANT_DEFCONFIG=msm8916_sec_j53g_eur_defconfig msm8916_sec_defconfig SELINUX_DEFCONFIG=selinux_defconfig
+
+    - name: Build kernel
+      run: |
+        make -j$(nproc) ARCH=arm CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi-
+
+    - name: Prepare boot artifacts
+      run: |
+        mkdir -p out/boot/dtb
+        cp arch/arm/boot/zImage out/boot/
+        cp arch/arm/boot/dts/*.dtb out/boot/dtb/
+        
+    - name: Combine zImage + all dtbs into Image.gz-dtb for AnyKernel3
+      run: |
+        cat out/boot/zImage out/boot/dtb/*.dtb > out/boot/Image.gz-dtb
+
+    - name: Clone AnyKernel3
+      run: |
+        git clone --depth=1 https://github.com/fmcpe/AnyKernel3-j53g.git anykernel
+
+    - name: Copy kernel to AnyKernel3
+      run: |
+        cp out/boot/Image.gz-dtb anykernel/
+
+    - name: Package AnyKernel3 zip
+      run: |
+        cd anykernel
+        zip -r9 ../MSM8916-J53G-Kernel.zip * -x .git README.md *placeholder
+
+    - name: Upload kernel artifact
+      uses: actions/upload-artifact@v6.0.0
+      with:
+        path: MSM8916-J53G-Kernel.zip
