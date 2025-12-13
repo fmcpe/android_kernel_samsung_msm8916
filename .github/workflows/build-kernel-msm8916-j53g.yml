@@ -25,19 +25,13 @@ jobs:
           libncurses-dev libncurses6 \
           libtinfo-dev \
           lib32z1 lib32stdc++6 \
-          ccache unzip \
-          device-tree-compiler zip
-
-    - name: Add compatibility symlinks
-      run: |
-        sudo ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
-        sudo ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
+          ccache unzip zip
 
     - name: Setup ccache
       run: |
         echo "USE_CCACHE=1" >> $GITHUB_ENV
         echo "CCACHE_DIR=$HOME/.ccache" >> $GITHUB_ENV
-        ccache -M 10G
+        ccache -M 16G
 
     - name: Clone GCC 4.9 toolchain
       run: |
@@ -48,23 +42,20 @@ jobs:
     - name: Export build variables
       run: |
         echo "ARCH=arm" >> $GITHUB_ENV
-        echo "SUBARCH=arm" >> $GITHUB_ENV
         echo "CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi-" >> $GITHUB_ENV
-        echo "KBUILD_BUILD_USER=serenity" >> $GITHUB_ENV
-        echo "KBUILD_BUILD_HOST=j53g-los-oc" >> $GITHUB_ENV
 
     - name: Clean kernel tree
       run: |
-        make ARCH=arm CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi- clean
-        make ARCH=arm CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi- mrproper
+        make clean
+        make mrproper
 
     - name: Configure kernel
       run: |
-        make ARCH=arm CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi- VARIANT_DEFCONFIG=msm8916_sec_j53g_eur_defconfig msm8916_sec_defconfig SELINUX_DEFCONFIG=selinux_defconfig
+        make VARIANT_DEFCONFIG=msm8916_sec_j53g_eur_defconfig msm8916_sec_defconfig SELINUX_DEFCONFIG=selinux_defconfig
 
     - name: Build kernel
       run: |
-        make -j$(nproc) ARCH=arm CROSS_COMPILE=$GITHUB_WORKSPACE/toolchain/bin/arm-linux-androideabi-
+        make -j256
 
     - name: Prepare boot artifacts
       run: |
