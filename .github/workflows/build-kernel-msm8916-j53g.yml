@@ -55,25 +55,20 @@ jobs:
 
     - name: Build kernel
       run: |
-        make -j256
+        make -j2048
 
     - name: Prepare boot artifacts
       run: |
         mkdir -p out/boot/dtb
         cp arch/arm/boot/zImage out/boot/
-        cp arch/arm/boot/dts/*.dtb out/boot/dtb/
         
-    - name: Combine zImage + all dtbs into Image.gz-dtb for AnyKernel3
-      run: |
-        cat out/boot/zImage out/boot/dtb/*.dtb > out/boot/Image.gz-dtb
-
     - name: Clone AnyKernel3
       run: |
         git clone --depth=1 https://github.com/fmcpe/AnyKernel3-j53g.git anykernel
 
     - name: Copy kernel to AnyKernel3
       run: |
-        cp out/boot/Image.gz-dtb anykernel/
+        cp out/boot/zImage anykernel/
 
     - name: Package AnyKernel3 zip
       run: |
