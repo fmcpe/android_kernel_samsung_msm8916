@@ -55,7 +55,7 @@ jobs:
 
     - name: Build kernel
       run: |
-        make -j2048
+        make -j $(nproc)
 
     - name: Prepare boot artifacts
       run: |
