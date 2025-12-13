@@ -18,7 +18,7 @@
 			regulator-name = "8916_s2";
 			reg = <0x1700 0x100>;
 			regulator-min-microvolt = <1050000>;
-			regulator-max-microvolt = <1375000>;
+			regulator-max-microvolt = <1600000>; /* Dangerously raised */
 		};
 	};
 };
@@ -50,10 +50,10 @@
 		regulator-name = "apc_corner";
 		qcom,cpr-fuse-corners = <3>;
 		regulator-min-microvolt = <1>;
-		regulator-max-microvolt = <12>;
+		regulator-max-microvolt = <16>; /* Arbitrary increase for "higher" corners */
 
-		qcom,cpr-voltage-ceiling = <1050000 1150000 1375000>;
-		qcom,cpr-voltage-floor = <1050000 1050000 1162500>;
+		qcom,cpr-voltage-ceiling = <1300000 1400000 1600000>; /* Raised aggressively */
+		qcom,cpr-voltage-floor = <1200000 1300000 1400000>; /* Raised floors */
 		vdd-apc-supply = <&pm8916_s2>;
 
 		qcom,vdd-mx-corner-map = <4 5 7>;
@@ -73,42 +73,45 @@
 		qcom,cpr-down-threshold = <2>;
 		qcom,cpr-idle-clocks = <15>;
 		qcom,cpr-gcnt-time = <1>;
-		qcom,vdd-apc-step-up-limit = <1>;
-		qcom,vdd-apc-step-down-limit = <1>;
-		qcom,cpr-apc-volt-step = <5000>;
+		qcom,vdd-apc-step-up-limit = <2>; /* Allow faster ramps */
+		qcom,vdd-apc-step-down-limit = <2>;
+		qcom,cpr-apc-volt-step = <10000>; /* Smaller steps for finer control */
 
 		qcom,cpr-fuse-row = <27 0>;
 		qcom,cpr-fuse-target-quot = <42 24 6>;
 		qcom,cpr-fuse-ro-sel = <54 54 54>;
 		qcom,cpr-fuse-bp-cpr-disable = <57>;
 		qcom,cpr-fuse-init-voltage =
-					<27 36 6 0>,
-					<27 18 6 0>,
-					<27 0 6 0>;
-		qcom,cpr-init-voltage-ref = <1050000 1150000 1375000>;
-		qcom,cpr-init-voltage-step = <10000>;
-		qcom,cpr-corner-map = <1 1 2 2 3 3 3 3 3 3 3 3>;
+					<30 40 10 0>, /* Arbitrary higher init */
+					<30 30 10 0>,
+					<30 20 10 0>;
+		qcom,cpr-init-voltage-ref = <1300000 1400000 1600000>;
+		qcom,cpr-init-voltage-step = <15000>; /* Larger steps */
+		qcom,cpr-corner-map = <1 1 2 2 3 3 3 3 4 4 5 5 6 6 7 7>; /* Extended mapping */
 		qcom,cpr-corner-frequency-map =
 					<1 200000000>,
 					<2 400000000>,
-					<3 533330000>,
-					<4 800000000>,
-					<5 998400000>,
-					<6 1094400000>,
-					<7 1152000000>,
-					<8 1209600000>,
-					<9 1363200000>,
-					<10 1401600000>,
-					<11 1478400000>,
-					<12 1612800000>;
+					<3 800000000>,
+					<4 1200000000>,
+					<5 1600000000>,
+					<6 2000000000>,
+					<7 2300000000>,
+					<8 2500000000>,
+					<9 2700000000>,
+					<10 2800000000>,
+					<11 2900000000>,
+					<12 3000000000>,
+					<13 3100000000>, /* Hypothetical additions */
+					<14 3200000000>,
+					<15 3300000000>,
+					<16 3400000000>;
 		qcom,speed-bin-fuse-sel = <1 34 3 0>;
 		qcom,cpr-speed-bin-max-corners =
-					<0 0 2 4 12>;
-		qcom,cpr-quot-adjust-scaling-factor-max = <650>;
+					<0 0 2 4 16>; /* Allow up to new high corners */
+		qcom,cpr-quot-adjust-scaling-factor-max = <1000>; /* More aggressive scaling */
 		qcom,cpr-enable;
 	};
 };
-
 
 /* RPM controlled regulators */
 &rpm_bus {
