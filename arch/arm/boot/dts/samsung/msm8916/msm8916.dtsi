@@ -383,12 +383,13 @@
 		      <0x0005c004 0x8>,
 		      <0x0005c00c 0x8>;
 		reg-names = "rcg-base", "efuse1", "efuse";
-		qcom,safe-freq = < 400000000 >;
+		qcom,safe-freq = <400000000>;
 		cpu-vdd-supply = <&apc_vreg_corner>;
 		clocks = <&clock_gcc clk_gpll0_ao_clk_src>,
 			 <&clock_gcc clk_a53sspll>;
 		clock-names = "clk-4", "clk-5";
 		#clock-cells = <1>;
+	
 		qcom,speed0-bin-v0 =
 			<          0 0>,
 			<  200000000 1>,
@@ -402,7 +403,12 @@
 			< 1363200000 9>,
 			< 1401600000 10>,
 			< 1478400000 11>,
-			< 1612800000 12>;
+			< 1612800000 12>,
+	
+			/* Overclock (new) */
+			< 1804800000 13>,
+			< 1996800000 14>,
+			< 2147000000 15>;
 	};
 
 	cpubw: qcom,cpubw@0 {
@@ -443,12 +449,14 @@
 	qcom,msm-cpufreq {
 		reg = <0 4>;
 		compatible = "qcom,msm-cpufreq";
-		clocks = <&clock_cpu  clk_a7ssmux>,
-			 <&clock_cpu  clk_a7ssmux>,
-			 <&clock_cpu  clk_a7ssmux>,
-			 <&clock_cpu  clk_a7ssmux>;
+	
+		clocks = <&clock_cpu clk_a7ssmux>,
+			 <&clock_cpu clk_a7ssmux>,
+			 <&clock_cpu clk_a7ssmux>,
+			 <&clock_cpu clk_a7ssmux>;
 		clock-names = "cpu0_clk", "cpu1_clk",
-				"cpu2_clk", "cpu3_clk";
+			       "cpu2_clk", "cpu3_clk";
+	
 		qcom,cpufreq-table =
 			 <  200000 >,
 			 <  400000 >,
@@ -461,7 +469,12 @@
 			 < 1363200 >,
 			 < 1401600 >,
 			 < 1478400 >,
-			 < 1612800 >;
+			 < 1612800 >,
+	
+			/* Overclock */
+			 < 1804800 >,
+			 < 1996800 >,
+			 < 2147000 >;
 	};
 
 	qcom,sps {
