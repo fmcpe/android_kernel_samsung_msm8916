@@ -59,6 +59,7 @@ jobs:
 
     - name: Prepare boot artifacts
       run: |
+        mkdir -p out/boot/
         cp arch/arm/boot/zImage out/boot/
   
     - name: Build dt.img
