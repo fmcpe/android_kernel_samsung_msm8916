@@ -57,25 +57,26 @@ jobs:
       run: |
         make -j $(nproc)
 
-    - name: Prepare boot artifacts
-      run: |
-        mkdir -p out/boot/dtb
-        cp arch/arm/boot/zImage out/boot/
+    # - name: Prepare boot artifacts
+    #   run: |
+    #     mkdir -p out/boot/dtb
+    #     cp arch/arm/boot/zImage out/boot/
         
-    - name: Clone AnyKernel3
-      run: |
-        git clone --depth=1 https://github.com/fmcpe/AnyKernel3-j53g.git anykernel
+    # - name: Clone AnyKernel3
+    #   run: |
+    #     git clone --depth=1 https://github.com/fmcpe/AnyKernel3-j53g.git anykernel
 
-    - name: Copy kernel to AnyKernel3
-      run: |
-        cp out/boot/zImage anykernel/
+    # - name: Copy kernel to AnyKernel3
+    #   run: |
+    #     cp out/boot/zImage anykernel/
 
-    - name: Package AnyKernel3 zip
-      run: |
-        cd anykernel
-        zip -r9 ../MSM8916-J53G-Kernel.zip * -x .git README.md *placeholder
+    # - name: Package AnyKernel3 zip
+    #   run: |
+    #     cd anykernel
+    #     zip -r9 ../MSM8916-J53G-Kernel.zip * -x .git README.md *placeholder
 
     - name: Upload kernel artifact
       uses: actions/upload-artifact@v6.0.0
       with:
-        path: MSM8916-J53G-Kernel.zip
+        name: MSM8916-J53G-Kernel
+        path: arch/arm/boot/*
