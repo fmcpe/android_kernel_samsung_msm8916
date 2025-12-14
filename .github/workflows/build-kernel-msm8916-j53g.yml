@@ -59,9 +59,17 @@ jobs:
 
     - name: Prepare boot artifacts
       run: |
-        mkdir -p out/boot/dtb
         cp arch/arm/boot/zImage out/boot/
-        cp arch/arm/boot/dts/*.dtb out/boot/dtb
+  
+    - name: Build dt.img
+      run: |
+        chmod +x tools/dtbTool
+
+        tools/dtbTool \
+          -o out/boot/dt.img \
+          -s 2048 \
+          -p scripts/dtc/ \
+          arch/arm/boot/dts/
         
     # - name: Clone AnyKernel3
     #   run: |
