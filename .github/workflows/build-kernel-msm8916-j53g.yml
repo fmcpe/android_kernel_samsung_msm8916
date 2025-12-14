@@ -57,10 +57,11 @@ jobs:
       run: |
         make -j $(nproc)
 
-    # - name: Prepare boot artifacts
-    #   run: |
-    #     mkdir -p out/boot/dtb
-    #     cp arch/arm/boot/zImage out/boot/
+    - name: Prepare boot artifacts
+      run: |
+        mkdir -p out/boot/dtb
+        cp arch/arm/boot/zImage out/boot/
+        cp arch/arm/boot/dts/*.dtb out/boot/dtb
         
     # - name: Clone AnyKernel3
     #   run: |
@@ -79,4 +80,4 @@ jobs:
       uses: actions/upload-artifact@v6.0.0
       with:
         name: MSM8916-J53G-Kernel
-        path: arch/arm/boot/*
+        path: out/boot/*
